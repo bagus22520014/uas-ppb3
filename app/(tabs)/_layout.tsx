@@ -1,10 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Keyboard, View, Text, TouchableOpacity } from "react-native";
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 
-const tabLayout = () => {
+const TabLayout = () => {
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardVisible(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
     <Tabs
       screenOptions={{
@@ -12,7 +28,7 @@ const tabLayout = () => {
         tabBarShowLabel: false,
         tabBarStyle: {
           position: "absolute",
-          bottom: 20,
+          bottom: isKeyboardVisible ? -100 : 20, // Geser keluar layar jika keyboard aktif
           marginHorizontal: 20,
           height: 72,
           elevation: 0,
@@ -108,4 +124,4 @@ const tabLayout = () => {
   );
 };
 
-export default tabLayout;
+export default TabLayout;
