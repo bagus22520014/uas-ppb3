@@ -1,7 +1,7 @@
 import React from "react";
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/Colors";
 
 const tabLayout = () => {
@@ -12,8 +12,8 @@ const tabLayout = () => {
         tabBarShowLabel: false,
         tabBarStyle: {
           position: "absolute",
-          bottom: 27,
-          marginHorizontal: 16,
+          bottom: 20,
+          marginHorizontal: 20,
           height: 72,
           elevation: 0,
           backgroundColor: "#fff",
@@ -21,6 +21,9 @@ const tabLayout = () => {
           alignItems: "center",
           justifyContent: "center",
         },
+        tabBarButton: (props: any) => (
+          <TouchableOpacity {...props} activeOpacity={1} />
+        ),
       }}
     >
       <Tabs.Screen
