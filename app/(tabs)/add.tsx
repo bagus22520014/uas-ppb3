@@ -4,11 +4,13 @@ import {
   Text,
   View,
   TextInput,
-  Button,
+  TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { collection, addDoc } from "@firebase/firestore";
 import { db } from "@/firebaseConfig";
+import { Colors } from "@/constants/Colors";
 
 const Page = () => {
   const [recipe, setRecipe] = useState({
@@ -16,6 +18,7 @@ const Page = () => {
     ingredients: [""],
     steps: [""],
   });
+  const [loading, setLoading] = useState(false);
 
   const handleIngredientChange = (index: number, value: string) => {
     const updatedIngredients = [...recipe.ingredients];
@@ -68,6 +71,7 @@ const Page = () => {
       steps: filteredSteps,
     };
 
+    setLoading(true);
     try {
       const docRef = await addDoc(collection(db, "recipes"), recipeData);
       console.log("Recipe added with ID: ", docRef.id);
@@ -76,6 +80,8 @@ const Page = () => {
     } catch (error) {
       console.error("Error adding recipe: ", error);
       alert("Failed to submit the recipe. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -121,18 +127,26 @@ const Page = () => {
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
         <Text style={styles.header}>Add a Recipe</Text>
-        <Text style={styles.text}>Recipe Name</Text>
-        <TextInput
-          style={[styles.input, styles.marginBottom]}
-          placeholder="Recipe Name"
-          value={recipe.name}
-          onChangeText={(text) => setRecipe({ ...recipe, name: text })}
-        />
-        <Text style={styles.text}>Ingredients</Text>
-        <View>{renderIngredients()}</View>
-        <Text style={styles.text}>Steps</Text>
-        <View>{renderSteps()}</View>
-        <Button title="Submit Recipe" onPress={handleSubmit} />
+        {loading ? (
+          <ActivityIndicator size="large" color={Colors.primaryColors} />
+        ) : (
+          <>
+            <Text style={styles.text}>Recipe Name</Text>
+            <TextInput
+              style={[styles.input, styles.marginBottom]}
+              placeholder="Recipe Name"
+              value={recipe.name}
+              onChangeText={(text) => setRecipe({ ...recipe, name: text })}
+            />
+            <Text style={styles.text}>Ingredients</Text>
+            <View>{renderIngredients()}</View>
+            <Text style={styles.text}>Steps</Text>
+            <View>{renderSteps()}</View>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+              <Text style={styles.buttonText}>Submit Recipe</Text>
+            </TouchableOpacity>
+          </>
+        )}
       </View>
     </ScrollView>
   );
@@ -181,6 +195,17 @@ const styles = StyleSheet.create({
   },
   marginBottom: {
     marginBottom: 16,
+  },
+  button: {
+    backgroundColor: Colors.primaryColors,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
