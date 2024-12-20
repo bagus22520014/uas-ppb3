@@ -28,7 +28,7 @@ const TabLayout = () => {
         tabBarShowLabel: false,
         tabBarStyle: {
           position: "absolute",
-          bottom: isKeyboardVisible ? -100 : 20, // Geser keluar layar jika keyboard aktif
+          bottom: isKeyboardVisible ? -100 : 20,
           marginHorizontal: 20,
           height: 72,
           elevation: 0,
