@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
 import React from "react";
 import { StyleSheet, Text, View, Modal, Pressable } from "react-native";
@@ -24,6 +25,24 @@ const Alert: React.FC<AlertProps> = ({
       ? Colors.alert.warning
       : Colors.alert.info;
 
+  const icon =
+    type === "success"
+      ? "checkmark-circle"
+      : type === "error"
+      ? "close-circle"
+      : type === "warning"
+      ? "warning"
+      : "information-circle";
+
+  const buttonText =
+    type === "success"
+      ? "Continue"
+      : type === "error"
+      ? "Try again"
+      : type === "warning"
+      ? "Be careful"
+      : "OK";
+
   return (
     <Modal
       animationType="fade"
@@ -33,9 +52,10 @@ const Alert: React.FC<AlertProps> = ({
     >
       <View style={styles.overlay}>
         <View style={[styles.alertContainer, { backgroundColor }]}>
+          <Ionicons name={icon} size={48} color="#fff" style={styles.icon} />
           <Text style={styles.alertMessage}>{message}</Text>
           <Pressable style={styles.alertButton} onPress={onClose}>
-            <Text style={styles.alertButtonText}>OK</Text>
+            <Text style={styles.alertButtonText}>{buttonText}</Text>
           </Pressable>
         </View>
       </View>
@@ -51,27 +71,35 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   alertContainer: {
-    width: 300,
-    padding: 20,
-    borderRadius: 8,
+    width: 320,
+    padding: 24,
+    borderRadius: 16,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  icon: {
+    marginBottom: 16,
   },
   alertMessage: {
-    fontSize: 16,
+    fontSize: 18,
     color: "#fff",
     textAlign: "center",
-    marginBottom: 16,
+    marginBottom: 24,
   },
   alertButton: {
     backgroundColor: "#fff",
-    borderRadius: 4,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    borderRadius: 24,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
   },
   alertButtonText: {
     color: "#000",
     fontWeight: "bold",
-    fontSize: 14,
+    fontSize: 16,
   },
 });
 
