@@ -11,6 +11,7 @@ import {
 import { collection, addDoc } from "@firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { Colors } from "@/constants/Colors";
+import Alert from "@/components/alert";
 
 const Page = () => {
   const [recipe, setRecipe] = useState({
@@ -19,6 +20,11 @@ const Page = () => {
     steps: [""],
   });
   const [loading, setLoading] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState<"success" | "error" | "info">(
+    "info"
+  );
 
   const handleIngredientChange = (index: number, value: string) => {
     const updatedIngredients = [...recipe.ingredients];
@@ -61,7 +67,9 @@ const Page = () => {
       filteredIngredients.length === 0 ||
       filteredSteps.length === 0
     ) {
-      alert("Please fill in all required fields.");
+      setAlertMessage("Please fill in all required fields.");
+      setAlertType("error");
+      setAlertVisible(true);
       return;
     }
 
@@ -75,11 +83,15 @@ const Page = () => {
     try {
       const docRef = await addDoc(collection(db, "recipes"), recipeData);
       console.log("Recipe added with ID: ", docRef.id);
-      alert("Recipe submitted successfully!");
+      setAlertMessage("Recipe submitted successfully!");
+      setAlertType("success");
+      setAlertVisible(true);
       setRecipe({ name: "", ingredients: [""], steps: [""] });
     } catch (error) {
       console.error("Error adding recipe: ", error);
-      alert("Failed to submit the recipe. Please try again.");
+      setAlertMessage("Failed to submit the recipe. Please try again.");
+      setAlertType("error");
+      setAlertVisible(true);
     } finally {
       setLoading(false);
     }
@@ -147,6 +159,12 @@ const Page = () => {
             </TouchableOpacity>
           </>
         )}
+        <Alert
+          visible={alertVisible}
+          message={alertMessage}
+          type={alertType}
+          onClose={() => setAlertVisible(false)}
+        />
       </View>
     </ScrollView>
   );
