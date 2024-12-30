@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 100, // Ensure space at bottom for the button
+    paddingBottom: 100,
   },
   container: {
     margin: 24,
