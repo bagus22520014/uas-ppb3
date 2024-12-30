@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { collection, addDoc } from "@firebase/firestore";
 import { db } from "@/firebaseConfig";
@@ -136,43 +138,51 @@ const Page = () => {
   };
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <Text style={styles.header}>Add a Recipe</Text>
-        {loading ? (
-          <ActivityIndicator size="large" color={Colors.primaryColors} />
-        ) : (
-          <>
-            <Text style={styles.text}>Recipe Name</Text>
-            <TextInput
-              style={[styles.input, styles.marginBottom]}
-              placeholder="Recipe Name"
-              value={recipe.name}
-              onChangeText={(text) => setRecipe({ ...recipe, name: text })}
-            />
-            <Text style={styles.text}>Ingredients</Text>
-            <View>{renderIngredients()}</View>
-            <Text style={styles.text}>Steps</Text>
-            <View>{renderSteps()}</View>
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Submit Recipe</Text>
-            </TouchableOpacity>
-          </>
-        )}
-        <Alert
-          visible={alertVisible}
-          message={alertMessage}
-          type={alertType}
-          onClose={() => setAlertVisible(false)}
-        />
-      </View>
-    </ScrollView>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <ScrollView style={styles.scrollContainer} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.container}>
+          <Text style={styles.header}>Tambah Resep Baru</Text>
+          {loading ? (
+            <ActivityIndicator size="large" color={Colors.primaryColors} />
+          ) : (
+            <>
+              <Text style={styles.text}>Nama Resep</Text>
+              <TextInput
+                style={[styles.input, styles.marginBottom]}
+                placeholder="Recipe Name"
+                value={recipe.name}
+                onChangeText={(text) => setRecipe({ ...recipe, name: text })}
+              />
+              <Text style={styles.text}>Bahan-bahan</Text>
+              <View>{renderIngredients()}</View>
+              <Text style={styles.text}>Langkah Memasak</Text>
+              <View>{renderSteps()}</View>
+              <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>Simpan Resep</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          <Alert
+            visible={alertVisible}
+            message={alertMessage}
+            type={alertType}
+            onClose={() => setAlertVisible(false)}
+          />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 100,
   },
   container: {
     margin: 24,
@@ -188,6 +198,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
+    textAlign: 'center',
   },
   text: {
     fontSize: 16,
